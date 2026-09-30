@@ -1,0 +1,10 @@
+langgraph
+langchain
+langchain_community
+pypdf
+sentence-transformers
+fastapi
+torch
+mcp
+langchain-core
+langchain-text-splitters

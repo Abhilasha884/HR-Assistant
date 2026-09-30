@@ -1,0 +1,3 @@
+2026-09-21 16:34:12 | INFO | hr_assistant.test | Logger test successful
+2026-09-21 16:34:12 | ERROR | hr_assistant.test | Error test
+2026-09-21 17:32:32 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=8

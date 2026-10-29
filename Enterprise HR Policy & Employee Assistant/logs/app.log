@@ -1,3 +1,13 @@
 2026-09-21 16:34:12 | INFO | hr_assistant.test | Logger test successful
 2026-09-21 16:34:12 | ERROR | hr_assistant.test | Error test
 2026-09-21 17:32:32 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=8
+2026-10-26 17:17:22 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=9
+2026-10-26 17:19:21 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=get_latest_payroll
+2026-10-26 17:19:41 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=get_latest_payroll
+2026-10-26 17:30:22 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=10
+2026-10-26 17:52:27 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=11
+2026-10-26 17:52:39 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=12
+2026-10-26 18:08:57 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=13
+2026-10-26 18:09:07 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=14
+2026-10-26 18:10:36 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=15
+2026-10-26 18:10:46 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=16

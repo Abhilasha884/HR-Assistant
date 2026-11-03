@@ -1,7 +1,7 @@
 from pydantic import BaseModel,EmailStr,Field,computed_field
 from sqlalchemy import Column, String, Date, DateTime, Float
 from datetime import date,datetime
-from typing import Optional
+from typing import Any, Optional
 from src.API.database import Base
 from sqlalchemy.sql import func
 
@@ -113,6 +113,8 @@ class AgentRequest(BaseModel):
 
 class AgentResponse(BaseModel):
     response: str
+    requires_confirmation:bool=False
+    confirmation_data:dict[str,Any] | None=None
 
 
 class SessionRequest(BaseModel):

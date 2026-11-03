@@ -3,7 +3,9 @@ import streamlit as st
 import requests
 from datetime import date
 
-
+# ---------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------
 
 FASTAPI_URL = "http://127.0.0.1:8000"
 
@@ -13,6 +15,10 @@ st.set_page_config(
     layout="wide"
 )
 
+
+# ---------------------------------------------------------
+# Session State
+# ---------------------------------------------------------
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = None
@@ -42,8 +48,18 @@ def api_get(endpoint):
             timeout=15
         )
         return response
-    except requests.exceptions.RequestException:
-        st.error("Could not connect to FastAPI. Check that the server is running.")
+
+    except requests.exceptions.Timeout:
+        st.error(f"Request timed out while accessing {endpoint}.")
+        return None
+
+    except requests.exceptions.ConnectionError as exc:
+        st.error("Could not connect to FastAPI.")
+        st.code(str(exc))
+        return None
+
+    except requests.exceptions.RequestException as exc:
+        st.error(f"API request failed: {exc}")
         return None
 
 
@@ -60,11 +76,14 @@ def logout():
             )
 
             if response.status_code != 200:
-                st.error(f"Could not close session: {response.text}")
+                st.error(
+                    f"Could not close session: {response.text}"
+                )
                 return
 
-        except requests.exceptions.RequestException:
+        except requests.exceptions.RequestException as exc:
             st.error("Could not connect to FastAPI to close the session.")
+            st.code(str(exc))
             return
 
     st.session_state.session_id = None
@@ -73,18 +92,24 @@ def logout():
     st.session_state.messages = []
     st.session_state.current_page = "Dashboard"
 
+    if "leave_success" in st.session_state:
+        del st.session_state["leave_success"]
+
     st.rerun()
 
 
 def show_error_response(response, not_found_message):
     """Display a readable message for an API response."""
+
     if response is None:
         return
 
     if response.status_code == 404:
         st.info(not_found_message)
+
     elif not response.ok:
-        st.error(f"API error ({response.status_code}): {response.text}")
+        st.error(f"API error ({response.status_code})")
+        st.code(response.text)
 
 
 def show_leave_balances(employee_id):
@@ -102,10 +127,17 @@ def show_leave_balances(employee_id):
         return
 
     if not response.ok:
-        show_error_response(response, "No leave balances found.")
+        show_error_response(
+            response,
+            "No leave balances found."
+        )
         return
 
-    balances = response.json()
+    try:
+        balances = response.json()
+    except ValueError:
+        st.error("FastAPI returned an invalid leave-balance response.")
+        return
 
     if not balances:
         st.info("No leave balances found.")
@@ -172,33 +204,34 @@ if st.session_state.session_id is None:
 
             else:
                 try:
-                    # Create the employee's application session.
                     response = requests.post(
                         f"{FASTAPI_URL}/sessions",
                         json={"employee_id": user_id},
                         timeout=15
                     )
 
-                    if response.status_code != 200:
-                        st.error(f"Login failed: {response.text}")
+                    if response.status_code not in (200, 201):
+                        st.error(
+                            f"Login failed ({response.status_code})"
+                        )
+                        st.code(response.text)
 
                     else:
                         session_data = response.json()
                         session_id = session_data["session_id"]
                         employee_id = session_data["employee_id"]
 
-                        # Fetch the employee profile.
                         employee_response = requests.get(
                             f"{FASTAPI_URL}/employees/{employee_id}",
                             timeout=15
                         )
 
                         if employee_response.status_code != 200:
-                            # Do not leave an active session behind if
-                            # the profile cannot be loaded.
+
                             try:
                                 requests.put(
-                                    f"{FASTAPI_URL}/sessions/{session_id}/close",
+                                    f"{FASTAPI_URL}/sessions/"
+                                    f"{session_id}/close",
                                     timeout=15
                                 )
                             except requests.exceptions.RequestException:
@@ -206,9 +239,9 @@ if st.session_state.session_id is None:
 
                             st.error(
                                 "The employee session was created, but "
-                                "the employee profile could not be loaded. "
-                                f"Details: {employee_response.text}"
+                                "the employee profile could not be loaded."
                             )
+                            st.code(employee_response.text)
 
                         else:
                             st.session_state.session_id = session_id
@@ -219,11 +252,16 @@ if st.session_state.session_id is None:
 
                             st.rerun()
 
-                except requests.exceptions.RequestException:
-                    st.error(
-                        "Could not connect to FastAPI. "
-                        "Please make sure the backend is running."
-                    )
+                except requests.exceptions.Timeout:
+                    st.error("Login request timed out.")
+
+                except requests.exceptions.ConnectionError as exc:
+                    st.error("Could not connect to FastAPI.")
+                    st.code(str(exc))
+
+                except (requests.exceptions.RequestException,
+                        ValueError, KeyError) as exc:
+                    st.error(f"Login failed: {exc}")
 
 
 # ---------------------------------------------------------
@@ -250,8 +288,12 @@ else:
             )
 
             st.write(f"**Employee ID:** {employee_id}")
-            st.write(f"**Department:** {employee.get('department') or '-'}")
-            st.write(f"**Designation:** {employee.get('designation') or '-'}")
+            st.write(
+                f"**Department:** {employee.get('department') or '-'}"
+            )
+            st.write(
+                f"**Designation:** {employee.get('designation') or '-'}"
+            )
 
         else:
             st.write(f"**Employee ID:** {employee_id}")
@@ -339,33 +381,17 @@ else:
             st.rerun()
 
     # -----------------------------------------------------
-    # Leave
-    # -----------------------------------------------------
-    
-    # -----------------------------------------------------
-    # Leave
+    # Leave Management
     # -----------------------------------------------------
 
     elif page == "Leave":
 
         st.subheader("📅 Leave Management")
 
-        employee_id = st.session_state.employee_id
-
-        # -------------------------------------------------
-        # Leave Balances
-        # -------------------------------------------------
-
         st.markdown("### My Leave Balances")
-
         show_leave_balances(employee_id)
 
         st.divider()
-
-        # -------------------------------------------------
-        # Apply for Leave
-        # -------------------------------------------------
-
         st.markdown("### 📝 Apply for Leave")
 
         with st.form("apply_leave_form", clear_on_submit=True):
@@ -414,10 +440,6 @@ else:
 
             if submitted:
 
-                # -----------------------------------------
-                # Validate dates
-                # -----------------------------------------
-
                 if end_date < start_date:
                     st.error(
                         "End date must be on or after the start date."
@@ -428,10 +450,6 @@ else:
                         end_date - start_date
                     ).days + 1
 
-                    # -------------------------------------
-                    # Validate number of days
-                    # -------------------------------------
-
                     if number_of_days > calendar_days:
                         st.error(
                             f"Number of leave days cannot exceed "
@@ -440,11 +458,8 @@ else:
                         )
 
                     else:
-                        # ---------------------------------
-                        # Submit to FastAPI
-                        # ---------------------------------
-
                         payload = {
+                            "employee_id": employee_id,
                             "leave_type": leave_type,
                             "start_date": start_date.isoformat(),
                             "end_date": end_date.isoformat(),
@@ -457,42 +472,38 @@ else:
                                 f"{FASTAPI_URL}/employees/"
                                 f"{employee_id}/leave-requests",
                                 json=payload,
-                                timeout=15
+                                timeout=30
                             )
 
                             if response.status_code in (200, 201):
-
                                 st.session_state.leave_success = (
                                     "Leave request submitted successfully! "
                                     "Your request is pending approval."
                                 )
-
-                                # Refresh the Leave page and request list.
                                 st.rerun()
 
                             else:
                                 st.error(
-                                    "Failed to submit leave request: "
-                                    f"{response.text}"
+                                    "Failed to submit leave request "
+                                    f"({response.status_code})."
                                 )
+                                st.code(response.text)
 
-                        except requests.exceptions.RequestException:
-                            st.error(
-                                "Could not connect to FastAPI. "
-                                "Please try again."
-                            )
+                        except requests.exceptions.Timeout:
+                            st.error("Leave request timed out.")
 
-        # Display success after rerun.
+                        except requests.exceptions.ConnectionError as exc:
+                            st.error("Could not connect to FastAPI.")
+                            st.code(str(exc))
+
+                        except requests.exceptions.RequestException as exc:
+                            st.error(f"Leave request failed: {exc}")
+
         if "leave_success" in st.session_state:
             st.success(st.session_state.leave_success)
             del st.session_state.leave_success
 
         st.divider()
-
-        # -------------------------------------------------
-        # My Leave Requests
-        # -------------------------------------------------
-
         st.markdown("### 📋 My Leave Requests")
 
         request_response = api_get(
@@ -503,16 +514,20 @@ else:
 
             if request_response.status_code == 200:
 
-                leave_requests = request_response.json()
+                try:
+                    leave_requests = request_response.json()
 
-                if leave_requests:
-                    st.dataframe(
-                        leave_requests,
-                        use_container_width=True,
-                        hide_index=True
-                    )
-                else:
-                    st.info("You have no leave requests.")
+                    if leave_requests:
+                        st.dataframe(
+                            leave_requests,
+                            use_container_width=True,
+                            hide_index=True
+                        )
+                    else:
+                        st.info("You have no leave requests.")
+
+                except ValueError:
+                    st.error("Invalid leave-requests response from FastAPI.")
 
             elif request_response.status_code == 404:
                 st.info("You have no leave requests yet.")
@@ -538,35 +553,40 @@ else:
         if response is not None:
 
             if response.status_code == 200:
-                payroll = response.json()
 
-                st.write(
-                    f"**Pay Period:** {payroll.get('pay_period', '-')}"
-                )
+                try:
+                    payroll = response.json()
 
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    st.metric(
-                        "Basic Salary",
-                        f"{float(payroll.get('basic_salary') or 0):,.2f}"
+                    st.write(
+                        f"**Pay Period:** {payroll.get('pay_period', '-')}"
                     )
 
-                    st.metric(
-                        "Allowances",
-                        f"{float(payroll.get('allowances') or 0):,.2f}"
-                    )
+                    col1, col2 = st.columns(2)
 
-                with col2:
-                    st.metric(
-                        "Deductions",
-                        f"{float(payroll.get('deductions') or 0):,.2f}"
-                    )
+                    with col1:
+                        st.metric(
+                            "Basic Salary",
+                            f"{float(payroll.get('basic_salary') or 0):,.2f}"
+                        )
 
-                    st.metric(
-                        "Net Salary",
-                        f"{float(payroll.get('net_salary') or 0):,.2f}"
-                    )
+                        st.metric(
+                            "Allowances",
+                            f"{float(payroll.get('allowances') or 0):,.2f}"
+                        )
+
+                    with col2:
+                        st.metric(
+                            "Deductions",
+                            f"{float(payroll.get('deductions') or 0):,.2f}"
+                        )
+
+                        st.metric(
+                            "Net Salary",
+                            f"{float(payroll.get('net_salary') or 0):,.2f}"
+                        )
+
+                except (ValueError, TypeError) as exc:
+                    st.error(f"Could not display payroll data: {exc}")
 
             elif response.status_code == 404:
                 st.info("No payroll information found.")
@@ -585,8 +605,6 @@ else:
 
         st.subheader("🎉 Company Holidays")
 
-        current_year = date.today().year if False else 2026
-
         year = st.selectbox(
             "Select Year",
             options=list(range(2026, 2031)),
@@ -598,16 +616,21 @@ else:
         if response is not None:
 
             if response.status_code == 200:
-                holidays = response.json()
 
-                if holidays:
-                    st.dataframe(
-                        holidays,
-                        use_container_width=True,
-                        hide_index=True
-                    )
-                else:
-                    st.info(f"No holidays found for {year}.")
+                try:
+                    holidays = response.json()
+
+                    if holidays:
+                        st.dataframe(
+                            holidays,
+                            use_container_width=True,
+                            hide_index=True
+                        )
+                    else:
+                        st.info(f"No holidays found for {year}.")
+
+                except ValueError:
+                    st.error("Invalid holidays response from FastAPI.")
 
             elif response.status_code == 404:
                 st.info(f"No holidays found for {year}.")
@@ -618,6 +641,7 @@ else:
                     f"No holidays found for {year}."
                 )
 
+    
     # -----------------------------------------------------
     # HR Assistant
     # -----------------------------------------------------
@@ -649,34 +673,102 @@ else:
                 st.write(user_query)
 
             try:
-                response = requests.post(
-                    f"{FASTAPI_URL}/agent",
-                    json={
-                        "session_id": st.session_state.session_id,
-                        "user_query": user_query
-                    },
-                    timeout=120
-                )
+                with st.spinner(
+                    "The HR Assistant is processing your question..."
+                ):
+
+                    response = requests.post(
+                        f"{FASTAPI_URL}/agent",
+                        json={
+                            "session_id": st.session_state.session_id,
+                            "user_query": user_query
+                        },
+                        timeout=900
+                    )
 
                 if response.status_code == 200:
-                    assistant_response = response.json()["response"]
 
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": assistant_response
-                    })
+                    try:
+                        data = response.json()
 
-                    with st.chat_message("assistant"):
-                        st.write(assistant_response)
+                    except ValueError:
+                        st.error(
+                            "FastAPI returned an invalid JSON response."
+                        )
+                        st.code(response.text)
+
+                    else:
+                        assistant_response = data.get("response")
+
+                        if assistant_response is None:
+                            st.error(
+                                "The agent response does not contain "
+                                "the expected response field."
+                            )
+                            st.json(data)
+
+                        else:
+
+                            # Check whether confirmation is required.
+                            requires_confirmation = data.get(
+                                "requires_confirmation", False
+                            )
+
+                            if requires_confirmation:
+
+                                leave_details = data.get(
+                                    "confirmation_data"
+                                ) or {}
+
+                                # Build a readable confirmation message.
+                                confirmation_message = (
+                                    f"{assistant_response}\n\n"
+                                    f"**Leave Type:** "
+                                    f"{leave_details.get('leave_type', '-')}\n\n"
+                                    f"**Start Date:** "
+                                    f"{leave_details.get('start_date', '-')}\n\n"
+                                    f"**End Date:** "
+                                    f"{leave_details.get('end_date', '-')}\n\n"
+                                    f"**Number of Days:** "
+                                    f"{leave_details.get('number_of_days', '-')}\n\n"
+                                    f"**Reason:** "
+                                    f"{leave_details.get('reason') or 'Not provided'}\n\n"
+                                    "Please reply **Yes** to submit or "
+                                    "**No** to cancel."
+                                )
+
+                                assistant_response = confirmation_message
+
+                            # Save assistant response in chat history.
+                            st.session_state.messages.append({
+                                "role": "assistant",
+                                "content": assistant_response
+                            })
+
+                            with st.chat_message("assistant"):
+                                st.markdown(assistant_response)
 
                 else:
                     st.error(
-                        f"Agent request failed ({response.status_code}): "
-                        f"{response.text}"
+                        f"Agent request failed ({response.status_code})."
                     )
+                    st.code(response.text)
 
-            except requests.exceptions.RequestException:
+            except requests.exceptions.Timeout:
                 st.error(
-                    "Could not connect to FastAPI. "
-                    "Please make sure the backend is running."
+                    "The HR Assistant took longer than 900 seconds "
+                    "to respond. Check the FastAPI terminal for errors."
                 )
+
+            except requests.exceptions.ConnectionError as exc:
+                st.error(
+                    "Could not establish a connection to FastAPI. "
+                    "Check the backend terminal."
+                )
+                st.code(str(exc))
+
+            except requests.exceptions.RequestException as exc:
+                st.error(f"Agent request failed: {exc}")
+
+
+

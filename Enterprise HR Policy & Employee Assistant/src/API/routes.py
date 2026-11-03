@@ -1,5 +1,5 @@
 from datetime import date, datetime
-
+from langgraph.types import Command
 from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -420,15 +420,13 @@ def close_session(
     f"| session_id={session.session_id}")
     return session
 
-
 @router.post("/agent", response_model=AgentResponse)
 async def ask_hr_agent(
     request: AgentRequest,
     db: Session = Depends(get_db)
 ):
     try:
-
-        # Get the active session
+        # 1. Get the active employee session
         session = db.query(Session).filter(
             Session.session_id == request.session_id,
             Session.status == "active"
@@ -440,38 +438,123 @@ async def ask_hr_agent(
                 detail="Active session not found"
             )
 
-        # Get employee ID from the session
         employee_id = session.employee_id
 
-        # Update session activity
+        # 2. Update session activity
         session.last_activity_at = datetime.now()
         db.commit()
 
-        # Send employee ID to LangGraph
-        initial_state = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": request.user_query
-                }
-            ],
-            "employee_id": employee_id
+        # 3. Use the same thread for this employee session
+        config = {
+            "configurable": {
+                "thread_id": str(request.session_id)
+            }
         }
 
-        # Run LangGraph
-        result = await graph.ainvoke(initial_state)
+        # 4. Check whether this graph has a pending interrupt
+        snapshot = await graph.aget_state(config)
 
-        # Get final response
+        pending_interrupt = None
+
+        for task in snapshot.tasks:
+            if task.interrupts:
+                pending_interrupt = task.interrupts[0]
+                break
+
+        # 5. If confirmation is pending, process the employee's reply
+        if pending_interrupt:
+
+            answer = request.user_query.strip().lower()
+
+            yes_answers = {
+                "yes", "yes confirm", "confirm",
+                "confirmed", "proceed", "submit",
+                "yes submit", "okay", "ok"
+            }
+
+            no_answers = {
+                "no", "no cancel", "cancel",
+                "don't submit", "do not submit",
+                "reject", "stop"
+            }
+
+            if answer in yes_answers:
+                resume_value = True
+
+            elif answer in no_answers:
+                resume_value = False
+
+            else:
+                return AgentResponse(
+                    response=(
+                        "Your leave request is waiting for confirmation. "
+                        "Please reply Yes to submit it or No to cancel it."
+                    ),
+                    requires_confirmation=True,
+                    confirmation_data=pending_interrupt.value.get(
+                        "leave_details", {}
+                    )
+                )
+
+            # Resume the paused graph
+            result = await graph.ainvoke(
+                Command(resume=resume_value),
+                config=config
+            )
+
+        else:
+
+            # 6. Start a new graph invocation
+            initial_state = {
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": request.user_query
+                    }
+                ],
+                "employee_id": employee_id
+            }
+
+            result = await graph.ainvoke(
+                initial_state,
+                config=config
+            )
+
+        # 7. Check whether the graph is waiting for confirmation
+        interrupts = result.get("__interrupt__", [])
+
+        if interrupts:
+            interrupt_data = interrupts[0].value
+
+            leave_details = interrupt_data.get(
+                "leave_details", {}
+            )
+
+            return AgentResponse(
+                response=(
+                    "Please review your leave application details. "
+                    "Reply Yes to submit or No to cancel."
+                ),
+                requires_confirmation=True,
+                confirmation_data=leave_details
+            )
+
+        # 8. Return the final agent response
         final_message = result["messages"][-1]
 
         return AgentResponse(
-            response=final_message.content
+            response=str(final_message.content),
+            requires_confirmation=False
         )
 
     except HTTPException:
         raise
 
     except Exception as error:
+        logger.exception(
+            f"AGENT_EXECUTION_ERROR | session_id={request.session_id}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail=f"Agent execution failed: {str(error)}"

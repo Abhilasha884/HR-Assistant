@@ -11,3 +11,216 @@
 2026-10-26 18:09:07 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=14
 2026-10-26 18:10:36 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=15
 2026-10-26 18:10:46 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=16
+2026-10-29 15:13:13 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=17
+2026-10-29 15:15:21 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:15:28 | ERROR | hr_assistant.agent | TOOL_ERROR | employee_id=EMP002 | tool=search_hr_policy | error=(psycopg.errors.UndefinedFile) could not access file "vector": No such file or directory
+CONTEXT:  unnamed portal parameter $1 = '...'
+[SQL: SELECT langchain_pg_embedding.id AS langchain_pg_embedding_id, langchain_pg_embedding.collection_id AS langchain_pg_embedding_collection_id, langchain_pg_embedding.embedding AS langchain_pg_embedding_embedding, langchain_pg_embedding.document AS langchain_pg_embedding_document, langchain_pg_embedding.cmetadata AS langchain_pg_embedding_cmetadata, langchain_pg_embedding.embedding <=> %(embedding_1)s AS distance 
+FROM langchain_pg_embedding JOIN langchain_pg_collection ON langchain_pg_embedding.collection_id = langchain_pg_collection.uuid 
+WHERE langchain_pg_embedding.collection_id = %(collection_id_1)s::UUID ORDER BY distance ASC 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'embedding_1': '[-0.015596937388181686,0.0006384274456650019,-0.015136049129068851,0.0076800063252449036,-0.00752652483060956,-0.0528363399207592,0.02190404571592807 ... (21363 characters truncated) ... ,-0.01557798869907856,-0.05378180369734764,-0.013452774845063686,0.030095374211668968,0.04235821217298508,-0.07573392242193222,-0.011197833344340324]', 'collection_id_1': UUID('0186cd71-0f4f-4d23-a3b0-31867bcc2830'), 'param_1': 5}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-10-29 15:19:44 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP002 | session_id=17
+2026-10-29 15:21:08 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=18
+2026-10-29 15:22:27 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:22:31 | ERROR | hr_assistant.agent | TOOL_ERROR | employee_id=EMP002 | tool=search_hr_policy | error=(psycopg.errors.UndefinedFile) could not access file "vector": No such file or directory
+CONTEXT:  unnamed portal parameter $1 = '...'
+[SQL: SELECT langchain_pg_embedding.id AS langchain_pg_embedding_id, langchain_pg_embedding.collection_id AS langchain_pg_embedding_collection_id, langchain_pg_embedding.embedding AS langchain_pg_embedding_embedding, langchain_pg_embedding.document AS langchain_pg_embedding_document, langchain_pg_embedding.cmetadata AS langchain_pg_embedding_cmetadata, langchain_pg_embedding.embedding <=> %(embedding_1)s AS distance 
+FROM langchain_pg_embedding JOIN langchain_pg_collection ON langchain_pg_embedding.collection_id = langchain_pg_collection.uuid 
+WHERE langchain_pg_embedding.collection_id = %(collection_id_1)s::UUID ORDER BY distance ASC 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'embedding_1': '[-0.015596937388181686,0.0006384274456650019,-0.015136049129068851,0.0076800063252449036,-0.00752652483060956,-0.0528363399207592,0.02190404571592807 ... (21363 characters truncated) ... ,-0.01557798869907856,-0.05378180369734764,-0.013452774845063686,0.030095374211668968,0.04235821217298508,-0.07573392242193222,-0.011197833344340324]', 'collection_id_1': UUID('0186cd71-0f4f-4d23-a3b0-31867bcc2830'), 'param_1': 5}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-10-29 15:24:59 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:25:08 | ERROR | hr_assistant.agent | TOOL_ERROR | employee_id=EMP002 | tool=search_hr_policy | error=(psycopg.errors.UndefinedFile) could not access file "vector": No such file or directory
+CONTEXT:  unnamed portal parameter $1 = '...'
+[SQL: SELECT langchain_pg_embedding.id AS langchain_pg_embedding_id, langchain_pg_embedding.collection_id AS langchain_pg_embedding_collection_id, langchain_pg_embedding.embedding AS langchain_pg_embedding_embedding, langchain_pg_embedding.document AS langchain_pg_embedding_document, langchain_pg_embedding.cmetadata AS langchain_pg_embedding_cmetadata, langchain_pg_embedding.embedding <=> %(embedding_1)s AS distance 
+FROM langchain_pg_embedding JOIN langchain_pg_collection ON langchain_pg_embedding.collection_id = langchain_pg_collection.uuid 
+WHERE langchain_pg_embedding.collection_id = %(collection_id_1)s::UUID ORDER BY distance ASC 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'embedding_1': '[-0.015596937388181686,0.0006384274456650019,-0.015136049129068851,0.0076800063252449036,-0.00752652483060956,-0.0528363399207592,0.02190404571592807 ... (21363 characters truncated) ... ,-0.01557798869907856,-0.05378180369734764,-0.013452774845063686,0.030095374211668968,0.04235821217298508,-0.07573392242193222,-0.011197833344340324]', 'collection_id_1': UUID('0186cd71-0f4f-4d23-a3b0-31867bcc2830'), 'param_1': 5}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-10-29 15:41:03 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:41:07 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:53:18 | INFO | hr_assistant.session | LOGIN | employee_id=EMP002 | session_id=19
+2026-10-29 15:54:42 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 15:54:47 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP002 | tool=search_hr_policy
+2026-10-29 16:08:32 | INFO | hr_assistant.session | LOGIN | employee_id=EMP003 | session_id=20
+2026-10-29 16:10:21 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP003 | tool=search_hr_policy
+2026-10-29 16:10:26 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP003 | tool=search_hr_policy
+2026-10-29 16:27:24 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP003 | session_id=20
+2026-10-29 16:27:31 | INFO | hr_assistant.session | LOGIN | employee_id=EMP004 | session_id=21
+2026-10-29 16:28:05 | INFO | hr_assistant.session | AGENT_START | session_id=21 | query=	How many casual leaves are available annually?
+2026-10-29 16:28:05 | INFO | hr_assistant.session | AGENT_GRAPH_START | employee_id=EMP004
+2026-10-29 16:28:05 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP004 | messages=1
+2026-10-29 16:29:35 | ERROR | hr_assistant.agent | LLM_TIMEOUT | employee_id=EMP004 | elapsed=90.12s
+2026-10-29 16:29:35 | ERROR | hr_assistant.session | AGENT_TIMEOUT | session_id=21 | elapsed=90.44s
+2026-10-29 17:45:59 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP004 | session_id=21
+2026-10-30 18:27:04 | INFO | hr_assistant.session | LOGIN | employee_id=EMP005 | session_id=22
+2026-10-30 18:30:51 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 18:30:56 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 18:38:31 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=get_latest_payroll
+2026-10-30 18:38:35 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP005 | session_id=22
+2026-10-30 18:38:48 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=get_latest_payroll
+2026-10-30 18:39:02 | INFO | hr_assistant.session | LOGIN | employee_id=EMP007 | session_id=23
+2026-10-30 18:41:42 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP007 | tool=get_latest_payroll
+2026-10-30 18:41:42 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP007 | tool=get_latest_payroll
+2026-10-30 18:47:49 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP007 | tool=search_hr_policy
+2026-10-30 18:47:52 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP007 | tool=search_hr_policy
+2026-10-30 18:58:56 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP007 | session_id=23
+2026-10-30 18:58:56 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP007 | session_id=23
+2026-10-30 18:58:56 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP007 | session_id=23
+2026-10-30 19:02:36 | INFO | hr_assistant.session | LOGIN | employee_id=EMP005 | session_id=24
+2026-10-30 19:03:12 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=1
+2026-10-30 19:05:43 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=150.58s | tool_calls=1
+2026-10-30 19:05:43 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:05:43 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=annual casual leave entitlement
+2026-10-30 19:05:46 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=2.73s | context_length=4919
+2026-10-30 19:05:46 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:05:46 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=3
+2026-10-30 19:10:02 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=256.67s | tool_calls=0
+2026-10-30 19:18:04 | INFO | hr_assistant.session | LOGIN | employee_id=EMP005 | session_id=25
+2026-10-30 19:18:17 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=1
+2026-10-30 19:20:36 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=138.62s | tool_calls=1
+2026-10-30 19:20:36 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:20:36 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=casual leave annual entitlement
+2026-10-30 19:20:39 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=3.37s | context_length=4919
+2026-10-30 19:20:39 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:20:39 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=3
+2026-10-30 19:24:39 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=239.26s | tool_calls=0
+2026-10-30 19:29:32 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=1
+2026-10-30 19:31:25 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=113.01s | tool_calls=1
+2026-10-30 19:31:25 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:31:25 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=how many earned leaves do employees receive every year
+2026-10-30 19:31:28 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=3.34s | context_length=4919
+2026-10-30 19:31:28 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:31:28 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=3
+2026-10-30 19:35:44 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=255.87s | tool_calls=0
+2026-10-30 19:36:10 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=1
+2026-10-30 19:37:33 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=83.39s | tool_calls=1
+2026-10-30 19:37:33 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:37:33 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=maximum earned leave accumulation limit
+2026-10-30 19:37:37 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=3.60s | context_length=4127
+2026-10-30 19:37:37 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-30 19:37:37 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=3
+2026-10-30 19:41:23 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=226.30s | tool_calls=0
+2026-10-30 19:44:05 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP005 | session_id=25
+2026-10-31 15:14:19 | INFO | hr_assistant.session | LOGIN | employee_id=EMP005 | session_id=26
+2026-10-31 15:16:19 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=1
+2026-10-31 15:18:01 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=101.86s | tool_calls=1
+2026-10-31 15:18:01 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP005 | tool=search_hr_policy
+2026-10-31 15:18:01 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=sick leave annual entitlement
+2026-10-31 15:18:05 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=4.73s | context_length=4904
+2026-10-31 15:18:05 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP005 | tool=search_hr_policy
+2026-10-31 15:18:05 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP005 | messages=3
+2026-10-31 15:21:34 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP005 | elapsed=208.48s | tool_calls=0
+2026-10-31 15:23:20 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=27
+2026-10-31 15:23:37 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 15:25:28 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=110.92s | tool_calls=1
+2026-10-31 15:25:28 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:25:28 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=sick leave annual entitlement
+2026-10-31 15:25:31 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=3.18s | context_length=4904
+2026-10-31 15:25:31 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:25:31 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 15:29:32 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=240.92s | tool_calls=0
+2026-10-31 15:30:00 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 15:31:46 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=105.98s | tool_calls=1
+2026-10-31 15:31:46 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:31:47 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=company's leave year
+2026-10-31 15:31:55 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=8.14s | context_length=4919
+2026-10-31 15:31:55 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:31:55 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 15:35:02 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=187.52s | tool_calls=0
+2026-10-31 15:37:56 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 15:38:54 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=57.51s | tool_calls=1
+2026-10-31 15:38:54 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:38:54 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=work-from-home policy
+2026-10-31 15:38:58 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=4.46s | context_length=4483
+2026-10-31 15:38:58 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 15:38:58 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 15:47:23 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=504.47s | tool_calls=0
+2026-10-31 15:48:43 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 15:49:07 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=23.73s | tool_calls=1
+2026-10-31 15:49:07 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=get_employee_details
+2026-10-31 15:49:15 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=get_employee_details
+2026-10-31 15:49:15 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 15:56:21 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=425.71s | tool_calls=0
+2026-10-31 15:57:18 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 15:58:18 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=59.61s | tool_calls=1
+2026-10-31 15:58:18 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=get_leave_balance
+2026-10-31 15:58:18 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=get_leave_balance
+2026-10-31 15:58:18 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 15:59:07 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=48.88s | tool_calls=0
+2026-10-31 15:59:55 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 16:00:56 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=61.26s | tool_calls=1
+2026-10-31 16:00:56 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=get_leave_requests
+2026-10-31 16:00:56 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=get_leave_requests
+2026-10-31 16:00:56 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 16:04:04 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=188.09s | tool_calls=0
+2026-10-31 16:07:16 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-10-31 16:11:46 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=269.74s | tool_calls=1
+2026-10-31 16:11:46 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=get_leave_balance
+2026-10-31 16:11:46 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=get_leave_balance
+2026-10-31 16:11:46 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-10-31 16:22:51 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=664.98s | tool_calls=1
+2026-10-31 16:22:51 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 16:22:51 | INFO | hr_assistant.agent | RAG_SEARCH_START | query=casual leave application procedure
+2026-10-31 16:22:56 | INFO | hr_assistant.agent | RAG_SEARCH_SUCCESS | elapsed=4.59s | context_length=4929
+2026-10-31 16:22:56 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=search_hr_policy
+2026-10-31 16:22:56 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=5
+2026-11-01 18:40:11 | INFO | hr_assistant.session | LOGIN | employee_id=EMP010 | session_id=28
+2026-11-01 18:40:39 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP010 | messages=1
+2026-11-01 18:51:07 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP010 | elapsed=628.12s | tool_calls=0
+2026-11-01 18:55:18 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP010 | messages=1
+2026-11-01 19:07:09 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP010 | elapsed=710.88s | tool_calls=0
+2026-11-01 19:08:01 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP010 | messages=3
+2026-11-01 19:12:00 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP010 | elapsed=238.36s | tool_calls=1
+2026-11-01 19:12:00 | ERROR | hr_assistant.session | AGENT_EXECUTION_ERROR | session_id=28
+Traceback (most recent call last):
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\src\API\routes.py", line 518, in ask_hr_agent
+    result = await graph.ainvoke(
+             ^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\pregel\main.py", line 4090, in ainvoke
+    async for chunk in self.astream(
+    ...<30 lines>...
+            chunks.append(chunk)
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\pregel\main.py", line 3440, in astream
+    async for _ in runner.atick(
+    ...<16 lines>...
+            yield o
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\pregel\_runner.py", line 396, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\pregel\_retry.py", line 744, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\_internal\_runnable.py", line 762, in ainvoke
+    input = await step.ainvoke(input, config)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\_internal\_runnable.py", line 522, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\graph\_branch.py", line 190, in _aroute
+    return self._finish(writer, input, result, config)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\python_dy\Python_Repo\Abhilasha_Ishware\Enterprise HR Policy & Employee Assistant\my-env\Lib\site-packages\langgraph\graph\_branch.py", line 203, in _finish
+    r if isinstance(r, Send) else self.ends[r] for r in result
+                                  ~~~~~~~~~^^^
+KeyError: 'confirm_leave'
+During task with name 'llm_call' and id 'cc886c2e-dc4c-014e-83fa-0344306e3387'
+2026-11-01 19:21:48 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP010 | session_id=28
+2026-11-01 19:21:56 | INFO | hr_assistant.session | LOGIN | employee_id=EMP001 | session_id=29
+2026-11-01 19:22:37 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=1
+2026-11-01 19:32:13 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=576.53s | tool_calls=0
+2026-11-01 19:38:03 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=3
+2026-11-01 19:46:17 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=493.74s | tool_calls=1
+2026-11-01 20:18:55 | INFO | hr_assistant.agent | TOOL_CALL | employee_id=EMP001 | tool=apply_for_leave
+2026-11-01 20:19:03 | INFO | hr_assistant.agent | TOOL_SUCCESS | employee_id=EMP001 | tool=apply_for_leave
+2026-11-01 20:19:03 | INFO | hr_assistant.agent | LLM_START | employee_id=EMP001 | messages=5
+2026-11-01 20:22:03 | INFO | hr_assistant.agent | LLM_SUCCESS | employee_id=EMP001 | elapsed=179.65s | tool_calls=0
+2026-11-01 20:24:51 | INFO | hr_assistant.session | LOGOUT | employee_id=EMP001 | session_id=29
